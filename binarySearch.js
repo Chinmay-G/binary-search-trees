@@ -92,6 +92,58 @@ class Tree {
         }
         deleteRec(this.root, value);
     }
+
+    find(value, root = this.root) {
+        if (!root) return null;
+        if (root.data === value) return root;
+
+        if (value < root.data)
+            return this.find(value, root.left);
+        if (value > root.data)
+            return this.find(value, root.right);
+    }
+
+    levelOrder(callback, root = this.root) {
+        if (!callback) throw new Error('callback is Required!');
+        let arr = [root];
+        function levelOrderRec(root) {
+            if (arr.length === 0) return;
+
+            if (root.left) arr.push(root.left);
+            if (root.right) arr.push(root.right);
+
+            callback(arr.shift());
+            levelOrderRec(arr[0]);
+        }
+        levelOrderRec(root);
+    }
+
+    inOrder(callback, root = this.root) {
+        if (!callback) throw new Error('callback is Required!');
+        if (!root) return;
+
+        this.inOrder(callback, root.left);
+        callback(root);
+        this.inOrder(callback, root.right);
+    }
+
+    preOrder(callback, root = this.root) {
+        if (!callback) throw new Error('callback is Required!');
+        if (!root) return;
+
+        callback(root);
+        this.preOrder(callback, root.left);
+        this.preOrder(callback, root.right);
+    }
+
+    postOrder(callback, root = this.root) {
+        if (!callback) throw new Error('callback is Required!');
+        if (!root) return;
+
+        this.postOrder(callback, root.left);
+        this.postOrder(callback, root.right);
+        callback(root);
+    }
 }
 
 // buildTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324])
@@ -126,3 +178,24 @@ tree1.delete(6345); // leaf node right child
 tree1.delete(8);
 console.log('\n -----After Deletion-----\n');
 prettyPrint(tree1.root);
+
+// console.log(tree1.find(48));
+// console.log(tree1.find(4));
+// console.log(tree1.find(9));
+// console.log(tree1.find(10));
+
+let arr = [];
+const logDataInArr = (node) => {
+    arr.push(node.data);
+};
+
+// tree1.levelOrder(logData);
+// tree1.levelOrder();
+
+// console.log('\n ------------INORDER-------------\n');
+// tree1.inOrder(logDataInArr);
+
+// tree1.preOrder(logDataInArr);
+
+tree1.postOrder(logDataInArr);
+console.log(arr);
